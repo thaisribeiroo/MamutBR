@@ -1,0 +1,163 @@
+domain: gestao_manutencao_industrial
+tables:
+  equipamentos:
+    rows: 50
+    columns:
+      id:
+        dtype: int_seq
+        primary_key: true
+      tag_equipamento:
+        dtype: str
+        faker_provider: bothify
+      nome_equipamento:
+        dtype: str
+        choices:
+          - Compressor de Ar
+          - Gerador Diesel
+          - Elevador de Carga
+          - Bomba Centrífuga
+          - Painel Elétrico
+          - Ar Condicionado Central
+          - Transformador
+          - Caldeira
+          - Motor Hidráulico
+          - Esteira Transportadora
+      categoria:
+        dtype: str
+        choices:
+          - Utilidades
+          - Produção
+          - Infraestrutura
+          - Elétrica
+          - HVAC
+      criticidade:
+        dtype: str
+        choices:
+          - Baixa
+          - Média
+          - Alta
+          - Crítica
+      data_instalacao:
+        dtype: date
+        min: -10y
+        max: -2y
+      localizacao:
+        dtype: str
+        choices:
+          - Bloco A
+          - Bloco B
+          - Galpão 1
+          - Galpão 2
+          - Subestação
+          - Telhado
+          - Estacionamento
+  tecnicos:
+    rows: 20
+    columns:
+      id:
+        dtype: int_seq
+        primary_key: true
+      nome_completo:
+        dtype: name
+      especialidade:
+        dtype: str
+        choices:
+          - Mecânica
+          - Elétrica
+          - Hidráulica
+          - Refrigeração
+          - Automação
+      email_corporativo:
+        dtype: email
+      telefone:
+        dtype: phone
+  ordens_servico:
+    rows: 400
+    columns:
+      id:
+        dtype: int_seq
+        primary_key: true
+      equipamento_id:
+        dtype: int
+        foreign_key:
+          table: equipamentos
+          column: id
+      tecnico_id:
+        dtype: int
+        foreign_key:
+          table: tecnicos
+          column: id
+      tipo_manutencao:
+        dtype: str
+        choices:
+          - Preventiva
+          - Corretiva
+          - Preditiva
+      status:
+        dtype: str
+        choices:
+          - Concluída
+          - Cancelada
+          - Em Andamento
+      data_abertura:
+        dtype: date
+        min: -1y
+        max: today
+      custo_pecas:
+        dtype: float
+        min: 0
+        max: 2500
+      custo_mao_obra:
+        dtype: float
+        min: 100
+        max: 1500
+      descricao_servico:
+        dtype: text
+        nullable: 0.3
+  registros_parada:
+    rows: 250
+    columns:
+      id:
+        dtype: uuid
+        primary_key: true
+      equipamento_id:
+        dtype: int
+        foreign_key:
+          table: equipamentos
+          column: id
+      ordem_servico_id:
+        dtype: int
+        nullable: 0.1
+        foreign_key:
+          table: ordens_servico
+          column: id
+      motivo_parada:
+        dtype: str
+        choices:
+          - Quebra Inesperada
+          - Falha de Componente
+          - Sobrecarga
+          - Falta de Energia
+          - Ajuste Operacional
+          - Lubrificação
+          - Inspeção Visual
+      data_inicio:
+        dtype: date
+        min: -1y
+        max: today
+      duracao_horas:
+        dtype: int
+        min: 1
+        max: 72
+      impacto_operacional:
+        dtype: str
+        choices:
+          - Nenhum
+          - Redução de Velocidade
+          - Parada Parcial
+          - Parada Total
+      custo_lucro_cessante:
+        dtype: float
+        nullable: 0.5
+        min: 0
+        max: 10000
